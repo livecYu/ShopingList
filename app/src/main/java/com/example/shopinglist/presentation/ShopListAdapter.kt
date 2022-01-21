@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shopinglist.R
@@ -16,8 +17,10 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
 
     var shopList = listOf<ShopItem>()
     set(value){
+        val callback = ShopListDiffCallback(shopList,value)
+        val diffResult = DiffUtil.calculateDiff(callback)
+        diffResult.dispatchUpdatesTo(this)
         field = value
-        notifyDataSetChanged()
     }
     var onShopItemLongOnClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemOnClickListener: ((ShopItem) -> Unit)? = null
@@ -42,6 +45,7 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
+        Log.d("MyLog", "${++count}")
         val shopItem = shopList[position]
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
@@ -54,8 +58,6 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         holder.view.setOnClickListener{
             onShopItemOnClickListener?.invoke(shopItem)
         }
-
-
 
     }
 
