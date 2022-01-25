@@ -34,7 +34,7 @@ class ShopItemViewModel: ViewModel() {
     val shouldCloseScreen: LiveData<Unit>
         get() = _shouldCloseScreen
 
-    fun getShopItemId(shopItemId: Int){
+    fun getShopItem(shopItemId: Int){
         val item = getShopItemUseCase.getShopItemId(shopItemId)
         _shopItem.value = item
     }
