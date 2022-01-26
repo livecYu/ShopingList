@@ -24,7 +24,7 @@ class ShopItemViewModel: ViewModel() {
 
     private val _errorInputCount = MutableLiveData<Boolean>()
     val errorInputCount: LiveData<Boolean>
-        get() = _errorInputName
+        get() = _errorInputCount
 
     private val _shopItem = MutableLiveData<ShopItem>()
     val shopItem: LiveData<ShopItem>
@@ -91,16 +91,16 @@ class ShopItemViewModel: ViewModel() {
         return result
     }
 
-    public fun resetErrorInputName(){
+     fun resetErrorInputName(){
         _errorInputName.value = false
     }
 
-    public fun resetErrorInputCount(){
+     fun resetErrorInputCount(){
         _errorInputCount.value = false
     }
 
     private fun finishWork(){
-        _shouldCloseScreen.value
+        _shouldCloseScreen.value = Unit
     }
 
 }

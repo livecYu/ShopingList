@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -33,12 +35,9 @@ class ShopItemActivity : AppCompatActivity() {
         parseIntent()
         viewModel = ViewModelProvider(this) [ShopItemViewModel::class.java]
         initViews()
-        when(screenMode){
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
-        }
-
-
+        addTextChangeListeners()
+        launchRightMode()
+        observeViewMode()
 
     }
 
@@ -56,6 +55,9 @@ class ShopItemActivity : AppCompatActivity() {
     }
 
     private fun launchAddMode(){
+        buttonSave.setOnClickListener{
+            viewModel.addShopItem(etName.text?.toString(), etCount.text?.toString())
+        }
 
     }
 
@@ -83,6 +85,66 @@ class ShopItemActivity : AppCompatActivity() {
         etName = findViewById(R.id.et_name)
         etCount = findViewById(R.id.et_count)
         buttonSave = findViewById(R.id.save_button)
+    }
+    private fun addTextChangeListeners(){
+        etName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.resetErrorInputName()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+
+        etCount.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.resetErrorInputCount()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+    }
+
+    private fun launchRightMode(){
+        when(screenMode){
+            MODE_EDIT -> launchEditMode()
+            MODE_ADD -> launchAddMode()
+        }
+    }
+
+    private fun observeViewMode(){
+        viewModel.errorInputCount.observe(this){
+            val message = if (it){
+                getString(R.string.error_input_count)
+            } else {
+                null
+            }
+            tilCount.error = message
+        }
+
+        viewModel.errorInputName.observe(this){
+            val message = if (it){
+                getString(R.string.error_input_name)
+            } else {
+                null
+            }
+            tilName.error = message
+        }
+
+        viewModel.shouldCloseScreen.observe(this){
+            finish()
+        }
     }
 
     companion object{
