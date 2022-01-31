@@ -117,10 +117,16 @@ class ShopItemActivity : AppCompatActivity() {
 //    }
 //
     private fun launchRightMode(){
-        when(screenMode){
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
+        val fragment = when(screenMode){
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            else ->  throw RuntimeException("Unknown screen mode $screenMode")
         }
+    supportFragmentManager.beginTransaction()
+        .add(R.id.shop_item_container, fragment)
+        .commit()
+
+
     }
 //
 //    private fun observeViewMode(){
@@ -153,6 +159,8 @@ class ShopItemActivity : AppCompatActivity() {
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
         private const val MODE_UNKNOWN = ""
+
+
 
         fun newIntentAddItem(context: Context): Intent {
             val intent = Intent(context, ShopItemActivity::class.java)
